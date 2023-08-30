@@ -3,12 +3,16 @@ const app = express();
 const http = require('http').createServer(app);// rever
 const serverSocket = require('socket.io')(http);
 const { exec } = require('child_process');
+const pug = require("pug");
 
 var multer = require("multer");
 var fs = require("fs");
 
 const porta = 3000;
 app.use(express.static('public'));
+
+app.set("view engine", "pug");
+app.set("/views", __dirname); // Defina o diretório de visualizações
 
 http.listen(porta, () => {
     console.log("servidor iniciado.")
@@ -18,37 +22,84 @@ app.get('/', (req, resp) => {
     resp.sendFile(__dirname + '/');
 })
 
-app.use(multer({ dest: "temp" }).single("foto"));
+app.use(multer({ dest: "temp" }).single("file"));
 
-app.post("/uploadEXP", (request, response) => {
+
+
+
+app.post("/uploadEXP", async (request, response) => {
     var file = "arquivos/recebidos/" + request.file.originalname;
+    let dados;
     fs.readFile(request.file.path, (err, data) => {
-        fs.writeFile(file, data, (err) => {
+      if (err) {
+        console.log("Erro readFile: " + err);
+    }
+        fs.writeFile(file, data, async (err) => {
             if (err) {
-                console.log("Erro: " + err);
+                console.log("Erro writeFile: " + err);
             } else {
                 responseJSON = {
-                    nome: request.body.nome,
-                    idade: request.body.idade,
+                    
                     mensagem: "Upload concluído",
                     arquivo: request.file.originalname
-                }
-                executarFuncoesEmSequencia(request);
+                }                
+                  dados = await executarFuncoesEmSequencia(request);
             }
-            response.end(JSON.stringify(responseJSON));
+            console.log("upload realizado");
+            
+            let data = dados;
+            const keys = Object.keys(data[0]);
+            
+            response.render("dados", {keys, data });
+           
+
         });
     })
 });
 
+
+
+
+
 async function executarFuncoesEmSequencia  (request)  {
+  return new Promise(async (resolve, reject) => {
     try {
       await descompactarEXP(request.file.originalname);
       await lerArquivoEnviado(request.file.originalname);
-      console.log('Ambas as funções foram concluídas.');
+      dados = await lerJson(request.file.originalname);      
+      console.log('Ambas as funções foram concluídas.' + JSON.stringify(dados));      
+      resolve(dados);
     } catch (error) {
       console.error('Ocorreu um erro:', error);
+      reject(error)
     }
+  });
   };
+
+  function lerJson(nomeDoArquivo) {
+    return new Promise((resolve, reject) => {
+      const nomeSemExtensao = nomeDoArquivo.replace('.EXP', '');
+      const caminhoArquivoJSON = `${__dirname}/arquivos/json/${nomeSemExtensao}.json`;
+
+      fs.readFile(caminhoArquivoJSON, 'utf8', (err, content) => {
+        if (err) {
+          console.error('Erro ao ler o arquivo JSON:', err);
+          return;
+        }
+    
+        try {
+          const dadosJSON = JSON.parse(content);
+
+          console.log('Dados lidos do arquivo JSON:', dadosJSON);
+          resolve(dadosJSON);
+          // Agora você pode usar os dadosJSON como um dicionário de dados
+          // Por exemplo, para acessar um valor específico: dadosJSON.chave
+        } catch (error) {
+          console.error('Erro ao fazer parsing do JSON:', error);
+        }
+      });
+    });
+  }
 
   function descompactarEXP(nomeDoArquivo) {
     return new Promise((resolve, reject) => {
@@ -76,10 +127,7 @@ async function executarFuncoesEmSequencia  (request)  {
           reject(err);
           return;
         }
-      
-        const linhas = content.split('\n');
-        let linhaAtual = 0;
-      
+        const linhas = content.split('\n');     
         const dados = [];
         let chaves = [];
       
@@ -99,8 +147,7 @@ async function executarFuncoesEmSequencia  (request)  {
                     if (chave) {
                         registro[chave] = valor;
                     }
-                    });
-        
+                    });        
                     dados.push(registro);
                 }
                 }

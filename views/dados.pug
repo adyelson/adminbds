@@ -1,0 +1,12 @@
+html
+  head
+    title Tabela
+  body
+    table
+      tr
+        each key in keys
+          th= key
+      each item in data
+        tr
+          each value in item
+            td= value
