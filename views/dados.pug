@@ -1,12 +1,102 @@
 html
   head
-    title Tabela
+    title Tabela Editável
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css")
   body
-    table
+    button(id="download-button") Download JSON
+    button(id="insert-button") Inserir Linha
+    table(id="editable-table")
       tr
+        th Ação
         each key in keys
           th= key
       each item in data
         tr
+          td
+            button.delete-button(type="button") X
           each value in item
-            td= value
+            td.content(contenteditable="true")= value
+
+script.
+  // JavaScript para tornar a tabela editável
+  const table = document.getElementById("editable-table");
+  const downloadButton = document.getElementById("download-button");
+  let data = !{JSON.stringify(data)};
+  let keys = !{JSON.stringify(keys)};
+  table.addEventListener("input", (event) => {
+    const td = event.target;
+    const row = td.parentNode;
+    const rowIndex = row.rowIndex - 1;
+    const cellIndex = td.cellIndex - 1;
+    
+    data[rowIndex][keys[cellIndex]] = td.textContent;
+  });
+
+  table.addEventListener("click", (event) => {
+    if (event.target.classList.contains("delete-button")) {
+        console.log("DELETE");
+      const row = event.target.parentNode.parentNode;
+      const rowIndex = row.rowIndex - 1;
+      data.splice(rowIndex, 1);
+      row.remove();
+    }
+  });
+  
+
+  downloadButton.addEventListener("click", () => {
+    const updatedJson = JSON.stringify(data);
+    const blob = new Blob([updatedJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "updated_data.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+
+
+
+
+  // ...
+
+    // Evento de clique no botão "Inserir Linha"
+    const insertButton = document.getElementById("insert-button");
+    insertButton.addEventListener("click", () => {
+    // Crie uma nova linha vazia com o mesmo número de células que os cabeçalhos
+    const newRow = table.insertRow(1); // Insere no início da tabela
+    for (let i = 0; i < keys.length + 1; i++) { // +1 para a célula da ação
+        const cell = newRow.insertCell(i);
+        if (i === 0) {
+        // Célula de ação com botão de exclusão
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-button";
+        deleteButton.type = "button";
+        deleteButton.textContent = "X";
+        cell.appendChild(deleteButton);
+        } else {
+        // Célula de conteúdo editável com <div>
+        const contentEditable = document.createElement("div");
+        contentEditable.contentEditable = true;
+        cell.appendChild(contentEditable);
+        
+        // Adicionar evento de input para atualizar os dados
+        contentEditable.addEventListener("input", () => {
+            const rowIndex = newRow.rowIndex - 1;
+
+            // Verificar se o índice existe nas chaves e nos dados antes de atualizar
+            if (keys[i - 1] && data[rowIndex]) {
+            data[rowIndex][keys[i - 1]] = contentEditable.textContent;
+            }
+        });
+        }
+    }
+    // Adicione um novo objeto vazio aos dados
+    const newEmptyRow = {};
+    keys.forEach((key) => {
+        newEmptyRow[key] = "";
+    });
+    data.unshift(newEmptyRow);
+    });
+
+    // ...

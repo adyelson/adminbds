@@ -24,9 +24,6 @@ app.get('/', (req, resp) => {
 
 app.use(multer({ dest: "temp" }).single("file"));
 
-
-
-
 app.post("/uploadEXP", async (request, response) => {
     var file = "arquivos/recebidos/" + request.file.originalname;
     let dados;
