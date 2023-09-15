@@ -53,7 +53,7 @@ verificarEInstalarPrograma('p7zip-full')
                   const keys = Object.keys(data[0]);
                   
                   response.render("dados", {keys, data });
-                  limparDiretorios();
+                  //limparDiretorios();
 
               });
           })
@@ -70,13 +70,7 @@ function verificarEInstalarPrograma(programa) {
     const comandoVerificar = `sudo dpkg -l | grep ${programa}`;
 
     exec(comandoVerificar, (erro, stdout, stderr) => {
-      if (erro) {
-        console.error(`Erro ao verificar a instalação do ${programa}: ${erro}`);
-        reject(erro);
-        return;
-      }
-
-      if (!stdout.includes(programa)) {
+        
         // O programa não está instalado, então tentamos instalá-lo
         console.log(`${programa} não está instalado. Tentando instalar...`);
         const comandoInstalar = `sudo apt-get install ${programa} -y`;
@@ -90,10 +84,7 @@ function verificarEInstalarPrograma(programa) {
           console.log(`${programa} foi instalado com sucesso.`);
           resolve();
         });
-      } else {
-        console.log(`${programa} está instalado.`);
-        resolve();
-      }
+      
     });
   });
 }
@@ -101,14 +92,13 @@ function verificarEInstalarPrograma(programa) {
 function limparDiretorios(){
   const comandos = ['sudo rm arquivos/descompactados/*','sudo rm arquivos/json/*','sudo rm arquivos/recebidos/*'];
   comandos.forEach(comando => {
-     exec(comando, (erro, stdout, stderr) => {
-    if (erro) {
-      console.error(`Erro ao executar o comando: ${erro}`);
-      return;
-    }
-    
-    console.log(`Saída do comando:\n${stdout}`);
-  });
+    exec(comando, (erro, stdout, stderr) => {
+      if (erro) {
+        console.error(`Erro ao executar o comando: ${erro}`);
+        return;
+      }
+      
+    });
   });
  
 }
