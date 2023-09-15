@@ -9,53 +9,109 @@ var multer = require("multer");
 var fs = require("fs");
 
 const porta = 3000;
-app.use(express.static('public'));
 
-app.set("view engine", "pug");
-app.set("/views", __dirname); // Defina o diretório de visualizações
+verificarEInstalarPrograma('p7zip-full')
+  .then(() => {
+      console.log('Continuando com o restante do servidor...');
+      // SERVIDOR
+      app.use(express.static('public'));
 
-http.listen(porta, () => {
-    console.log("servidor iniciado.")
-})
+      app.set("view engine", "pug");
+      app.set("/views", __dirname); // Defina o diretório de visualizações
 
-app.get('/', (req, resp) => {
-    resp.sendFile(__dirname + '/');
-})
+      http.listen(porta, () => {
+          console.log("servidor iniciado.")
+      })
 
-app.use(multer({ dest: "temp" }).single("file"));
+      app.get('/', (req, resp) => {
+          resp.sendFile(__dirname + '/');
+      })
 
-app.post("/uploadEXP", async (request, response) => {
-    var file = "arquivos/recebidos/" + request.file.originalname;
-    let dados;
-    fs.readFile(request.file.path, (err, data) => {
-      if (err) {
-        console.log("Erro readFile: " + err);
-    }
-        fs.writeFile(file, data, async (err) => {
+      app.use(multer({ dest: "temp" }).single("file"));
+
+      app.post("/uploadEXP", async (request, response) => {
+          var file = "arquivos/recebidos/" + request.file.originalname;
+          let dados;
+          fs.readFile(request.file.path, (err, data) => {
             if (err) {
-                console.log("Erro writeFile: " + err);
-            } else {
-                responseJSON = {
-                    
-                    mensagem: "Upload concluído",
-                    arquivo: request.file.originalname
-                }                
-                  dados = await executarFuncoesEmSequencia(request);
-            }
-            console.log("upload realizado");
-            
-            let data = dados;
-            const keys = Object.keys(data[0]);
-            
-            response.render("dados", {keys, data });
-           
+              console.log("Erro readFile: " + err);
+          }
+              fs.writeFile(file, data, async (err) => {
+                  if (err) {
+                      console.log("Erro writeFile: " + err);
+                  } else {
+                      responseJSON = {
+                          
+                          mensagem: "Upload concluído",
+                          arquivo: request.file.originalname
+                      }                
+                        dados = await executarFuncoesEmSequencia(request);
+                  }
+                  console.log("upload realizado");
+                  
+                  let data = dados;
+                  const keys = Object.keys(data[0]);
+                  
+                  response.render("dados", {keys, data });
+                  limparDiretorios();
 
-        });
+              });
+          })
+      });
     })
-});
+    .catch((erro) => {
+      // Lidar com erros, se necessário
+      console.error(`Erro geral: ${erro}`);
+    });
 
+function verificarEInstalarPrograma(programa) {
+  return new Promise((resolve, reject) => {
+    // Comando para verificar se o programa está instalado
+    const comandoVerificar = `sudo dpkg -l | grep ${programa}`;
 
+    exec(comandoVerificar, (erro, stdout, stderr) => {
+      if (erro) {
+        console.error(`Erro ao verificar a instalação do ${programa}: ${erro}`);
+        reject(erro);
+        return;
+      }
 
+      if (!stdout.includes(programa)) {
+        // O programa não está instalado, então tentamos instalá-lo
+        console.log(`${programa} não está instalado. Tentando instalar...`);
+        const comandoInstalar = `sudo apt-get install ${programa} -y`;
+
+        exec(comandoInstalar, (erroInstalar, stdoutInstalar, stderrInstalar) => {
+          if (erroInstalar) {
+            console.error(`Erro ao instalar o ${programa}: ${erroInstalar}`);
+            reject(erroInstalar);
+            return;
+          }
+          console.log(`${programa} foi instalado com sucesso.`);
+          resolve();
+        });
+      } else {
+        console.log(`${programa} está instalado.`);
+        resolve();
+      }
+    });
+  });
+}
+
+function limparDiretorios(){
+  const comandos = ['sudo rm arquivos/descompactados/*','sudo rm arquivos/json/*','sudo rm arquivos/recebidos/*'];
+  comandos.forEach(comando => {
+     exec(comando, (erro, stdout, stderr) => {
+    if (erro) {
+      console.error(`Erro ao executar o comando: ${erro}`);
+      return;
+    }
+    
+    console.log(`Saída do comando:\n${stdout}`);
+  });
+  });
+ 
+}
 
 
 async function executarFuncoesEmSequencia  (request)  {
