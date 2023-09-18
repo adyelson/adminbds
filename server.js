@@ -1,5 +1,5 @@
 const express = require('express');
-
+const path = require('path');
 const app = express();
 const http = require('http').createServer(app);// rever
 const serverSocket = require('socket.io')(http);
@@ -58,15 +58,16 @@ verificarEInstalarPrograma('p7zip-full')
                   
                   let data = dados;
                   const keys = Object.keys(data[0]);
+                  let originalname = request.file.originalname;
                   
-                  response.render("dados", {keys, data });
-                  limparDiretorios();
+                  response.render("dados", {keys, data, originalname });
+                  //limparDiretorios();
 
               });
           })
       });
       
-      
+     
       
 
       app.post("/upload-json-and-convert", async (request, response) => {
@@ -85,7 +86,7 @@ verificarEInstalarPrograma('p7zip-full')
                           mensagem: "Upload concluído",
                           arquivo: request.file.originalname
                       }                
-                        dados = await executarFuncoesEmSequenciaReceber(request);
+                        dados = await executarFuncoesEmSequenciaReceber(request, response);
                   }
                
                   //limparDiretorios();
@@ -135,11 +136,11 @@ function limparDiretorios(){
   });
  
 }
-async function executarFuncoesEmSequenciaReceber  (request)  {
+async function executarFuncoesEmSequenciaReceber  (request, response)  {
   return new Promise(async (resolve, reject) => {
     try {
       await converterParaTexto(request.file.originalname);
-      // await lerArquivoEnviado(request.file.originalname);
+      await compactarCom7Zip(request.file.originalname, response);
       // dados = await lerJson(request.file.originalname);      
       // console.log('Ambas as funções foram concluídas.' + JSON.stringify(dados));      
       // resolve(dados);
@@ -149,6 +150,37 @@ async function executarFuncoesEmSequenciaReceber  (request)  {
     }
   });
   };
+
+  function compactarCom7Zip(nomeDoArquivo, res) {
+    return new Promise((resolve, reject) => {
+      const nomeSemExtensao = nomeDoArquivo.replace('.json', '');
+      // Comando para compactar usando o 7-Zip
+      let caminhoDestino = `${__dirname}/arquivos/arquivosEXP/${nomeSemExtensao}.EXP`;
+      let caminhoOrigem = `${__dirname}/arquivos/txtsalvo/${nomeSemExtensao}`
+      const comandoCompactar = `7z a ${caminhoDestino} ${caminhoOrigem}`;
+  
+      // Executar o comando
+      exec(comandoCompactar, (error, stdout, stderr) => {
+        if (error) {
+          console.error('Erro ao compactar:', stderr);
+          reject(error);
+          return;
+        }
+  
+        console.log('Arquivo compactado com sucesso:', caminhoDestino);
+        resolve(caminhoDestino);
+
+        // Configurar o cabeçalho de resposta para permitir o download do arquivo compactado
+        res.setHeader('Content-disposition', `attachment; filename=${path.basename(caminhoDestino)}`);
+        res.setHeader('Content-type', 'application/x-7z-compressed');
+
+        // Enviar o arquivo compactado como resposta
+        const fileStream = fs.createReadStream(caminhoDestino);
+        fileStream.pipe(res);
+        res.json({ caminho: caminhoDestino });
+      });
+    });
+  }
 
   function converterParaTexto(nomeDoArquivo) {
     return new Promise((resolve, reject) => {
@@ -167,7 +199,16 @@ async function executarFuncoesEmSequenciaReceber  (request)  {
   
         try {
           const dadosJSON = JSON.parse(content);
-  
+
+          for (let i = 1; i <= 8; i++) {
+            arquivoTexto += '# \n';
+          }
+          const chaves = Object.keys(dadosJSON[0]).join('\t').toUpperCase();
+          // Retorna as chaves como uma única string, separadas por vírgula (ou outro caractere, se preferir)
+          
+          
+          arquivoTexto += `# ${chaves}\n`;
+
           // Lógica para formatar os dados no arquivo de texto
           for (const jsonData of dadosJSON) {
             for (const chave in jsonData) {
