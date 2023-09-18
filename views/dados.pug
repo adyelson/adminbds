@@ -23,6 +23,7 @@ script.
   const downloadButton = document.getElementById("download-button");
   let data = !{JSON.stringify(data)};
   let keys = !{JSON.stringify(keys)};
+
   table.addEventListener("input", (event) => {
     const td = event.target;
     const row = td.parentNode;
@@ -42,18 +43,110 @@ script.
     }
   });
   
+  /////
 
   downloadButton.addEventListener("click", () => {
-    const updatedJson = JSON.stringify(data);
-    const blob = new Blob([updatedJson], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "updated_data.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  // Supondo que 'data' contenha os dados JSON a serem enviados
+
+  // Cria um arquivo Blob a partir dos dados JSON
+  const jsonBlob = new Blob([JSON.stringify(data)], { type: "application/json" });
+
+  // Cria um objeto FormData e adiciona o Blob a ele
+  const formData = new FormData();
+  formData.append("jsonFile", jsonBlob, "data.json");
+
+  // Envia o arquivo Blob para o servidor usando uma solicitação POST
+  fetch("/upload-json-and-convert", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text()) // Recebe o texto formatado do servidor
+    .then((formattedText) => {
+      // Cria um arquivo Blob com o texto formatado
+      const textBlob = new Blob([formattedText], { type: "text/plain" });
+
+      // Cria uma URL para o Blob
+      const blobUrl = URL.createObjectURL(textBlob);
+
+      // Cria um elemento <a> para fazer o download
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = "dados_formatados.txt"; // Nome do arquivo que será baixado
+      a.style.display = "none";
+
+      // Adiciona o elemento <a> ao corpo do documento
+      document.body.appendChild(a);
+
+      // Aciona o clique no elemento <a> para iniciar o download
+      a.click();
+
+      // Remove o elemento <a> do corpo do documento
+      document.body.removeChild(a);
+
+      // Libera a URL do Blob
+      URL.revokeObjectURL(blobUrl);
+    })
+    .catch((error) => {
+      console.error("Erro ao receber o texto formatado: " + error);
+    });
   });
+
+  // Código do cliente para enviar os dados JSON para o servidor
+  //- downloadButton.addEventListener("click", () => {
+  //-   // Supondo que 'data' contenha os dados JSON a serem enviados
+
+  //-   // Envia os dados JSON para o servidor usando uma solicitação POST
+  //-   fetch("/converter-e-enviar", {
+  //-     method: "POST",
+  //-     headers: {
+  //-       "Content-Type": "application/json", // Define o tipo de conteúdo como JSON
+  //-     },
+  //-     body: JSON.stringify(data), // Converte a matriz de objetos JSON em uma string JSON
+  //-   })
+  //-   .then((response) => response.text()) // Recebe o texto formatado do servidor
+  //-   .then((formattedText) => {
+  //-     // Cria um arquivo Blob com o texto formatado
+  //-     const blob = new Blob([formattedText], { type: "text/plain" });
+
+  //-     // Cria uma URL para o Blob
+  //-     const blobUrl = URL.createObjectURL(blob);
+
+  //-     // Cria um elemento <a> para fazer o download
+  //-     const a = document.createElement("a");
+  //-     a.href = blobUrl;
+  //-     a.download = "dados_formatados.txt"; // Nome do arquivo que será baixado
+  //-     a.style.display = "none";
+
+  //-     // Adiciona o elemento <a> ao corpo do documento
+  //-     document.body.appendChild(a);
+
+  //-     // Aciona o clique no elemento <a> para iniciar o download
+  //-     a.click();
+
+  //-     // Remove o elemento <a> do corpo do documento
+  //-     document.body.removeChild(a);
+
+  //-     // Libera a URL do Blob
+  //-     URL.revokeObjectURL(blobUrl);
+  //-   })
+  //-   .catch((error) => {
+  //-     console.error("Erro ao receber o texto formatado: " + error);
+  //-   });
+  //- });
+
+
+
+  //- downloadButton.addEventListener("click", () => {
+  //-   const updatedJson = JSON.stringify(data);
+  //-   const blob = new Blob([updatedJson], { type: "application/json" });
+  //-   const url = URL.createObjectURL(blob);
+  //-   const a = document.createElement("a");
+  //-   a.href = url;
+  //-   a.download = "updated_data.json";
+  //-   document.body.appendChild(a);
+  //-   a.click();
+  //-   document.body.removeChild(a);
+  //- });
 
 
 
