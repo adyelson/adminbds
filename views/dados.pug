@@ -43,53 +43,31 @@ script.
     }
   });
   
-  /////
+  const jsonData = JSON.stringify(data);
 
-  downloadButton.addEventListener("click", () => {
-  // Supondo que 'data' contenha os dados JSON a serem enviados
+  // Gere um nome de arquivo único, por exemplo, usando um timestamp
+  const timestamp = Date.now();
+  const fileName = `data_${timestamp}.json`;
 
-  // Cria um arquivo Blob a partir dos dados JSON
-  const jsonBlob = new Blob([JSON.stringify(data)], { type: "application/json" });
-
-  // Cria um objeto FormData e adiciona o Blob a ele
   const formData = new FormData();
-  formData.append("jsonFile", jsonBlob, "data.json");
+  formData.append("file", new Blob([jsonData], { type: "application/json" }), fileName);
 
-  // Envia o arquivo Blob para o servidor usando uma solicitação POST
-  fetch("/upload-json-and-convert", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text()) // Recebe o texto formatado do servidor
-    .then((formattedText) => {
-      // Cria um arquivo Blob com o texto formatado
-      const textBlob = new Blob([formattedText], { type: "text/plain" });
-
-      // Cria uma URL para o Blob
-      const blobUrl = URL.createObjectURL(textBlob);
-
-      // Cria um elemento <a> para fazer o download
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = "dados_formatados.txt"; // Nome do arquivo que será baixado
-      a.style.display = "none";
-
-      // Adiciona o elemento <a> ao corpo do documento
-      document.body.appendChild(a);
-
-      // Aciona o clique no elemento <a> para iniciar o download
-      a.click();
-
-      // Remove o elemento <a> do corpo do documento
-      document.body.removeChild(a);
-
-      // Libera a URL do Blob
-      URL.revokeObjectURL(blobUrl);
+  // Adicione um ouvinte de evento ao botão de download/upload
+  downloadButton.addEventListener("click", () => {
+    fetch("/upload-json-and-convert", {
+      method: "POST",
+      body: formData,
     })
-    .catch((error) => {
-      console.error("Erro ao receber o texto formatado: " + error);
-    });
+      .then((response) => response.text()) // Recebe o texto formatado do servidor
+      .then((formattedText) => {
+        // Aqui você pode fazer algo com o texto formatado, se necessário
+        console.log("Texto formatado recebido: " + formattedText);
+      })
+      .catch((error) => {
+        console.error("Erro ao receber o texto formatado: " + error);
+      });
   });
+
 
   // Código do cliente para enviar os dados JSON para o servidor
   //- downloadButton.addEventListener("click", () => {

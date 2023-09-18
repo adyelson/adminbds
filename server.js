@@ -65,6 +65,9 @@ verificarEInstalarPrograma('p7zip-full')
               });
           })
       });
+      
+      
+      
 
       app.post("/upload-json-and-convert", async (request, response) => {
           var file = "arquivos/preparacaojson/" + request.file.originalname;
@@ -82,7 +85,7 @@ verificarEInstalarPrograma('p7zip-full')
                           mensagem: "Upload concluído",
                           arquivo: request.file.originalname
                       }                
-                        dados = await executarFuncoesEmSequencia(request);
+                        dados = await executarFuncoesEmSequenciaReceber(request);
                   }
                
                   //limparDiretorios();
@@ -90,6 +93,7 @@ verificarEInstalarPrograma('p7zip-full')
               });
           })
       });
+
     });
       
 
@@ -131,14 +135,14 @@ function limparDiretorios(){
   });
  
 }
-async function executarFuncoesEmSequencia  (request)  {
+async function executarFuncoesEmSequenciaReceber  (request)  {
   return new Promise(async (resolve, reject) => {
     try {
-      await conveterParaTexto(request.file.originalname);
-      await lerArquivoEnviado(request.file.originalname);
-      dados = await lerJson(request.file.originalname);      
-      console.log('Ambas as funções foram concluídas.' + JSON.stringify(dados));      
-      resolve(dados);
+      await converterParaTexto(request.file.originalname);
+      // await lerArquivoEnviado(request.file.originalname);
+      // dados = await lerJson(request.file.originalname);      
+      // console.log('Ambas as funções foram concluídas.' + JSON.stringify(dados));      
+      // resolve(dados);
     } catch (error) {
       console.error('Ocorreu um erro:', error);
       reject(error)
@@ -146,39 +150,50 @@ async function executarFuncoesEmSequencia  (request)  {
   });
   };
 
-function conveterParaTexto(nomeDoArquivo){
-  return new Promise((resolve, reject) => {
-    const nomeSemExtensao = nomeDoArquivo.replace('.EXP', '');
-    const caminhoArquivoJSON = `${__dirname}/arquivos/preparacaojson/${nomeSemExtensao}.json`;
-
-    fs.readFile(caminhoArquivoJSON, 'utf8', (err, content) => {
-      if (err) {
-        console.error('Erro ao ler o arquivo JSON:', err);
-        return;
-      }  
-      try {
-        const dadosJSON = JSON.parse(content);
-      // Lógica para formatar os dados no arquivo de texto
-      if(nomeSemExtensao === nomeSemExtensao.toUpperCase()){console.log("UPPER")}
-      else{console.log("lower")}  
-
-        for (const jsonData of dadosJSON) {
-          for (const chave in jsonData) {
-            arquivoTexto += jsonData[chave] + '\t'; // Use o delimitador apropriado, como '\t' (tabulação)
+  function converterParaTexto(nomeDoArquivo) {
+    return new Promise((resolve, reject) => {
+      
+      const caminhoArquivoJSON = `${__dirname}/arquivos/preparacaojson/${nomeDoArquivo}`; // Adicione a extensão .json ao caminho
+      const nomeSemExtensao = nomeDoArquivo.replace('.json', '');
+      const caminhoArquivoTexto = `${__dirname}/arquivos/txtsalvo/${nomeSemExtensao}`; // Caminho para o arquivo de texto
+      let arquivoTexto = '';
+  
+      fs.readFile(caminhoArquivoJSON, 'utf8', (err, content) => {
+        if (err) {
+          console.error('Erro ao ler o arquivo JSON:', err);
+          reject(err);
+          return;
+        }
+  
+        try {
+          const dadosJSON = JSON.parse(content);
+  
+          // Lógica para formatar os dados no arquivo de texto
+          for (const jsonData of dadosJSON) {
+            for (const chave in jsonData) {
+              arquivoTexto += jsonData[chave] + '\t'; // Use o delimitador apropriado, como '\t' (tabulação)
+            }
+            arquivoTexto += '\n'; // Adicione uma quebra de linha após cada conjunto de dados
           }
-          arquivoTexto += '\n'; // Adicione uma quebra de linha após cada conjunto de dados
-        }    
-        // Define o cabeçalho de resposta para permitir o download do arquivo de texto
-        res.setHeader('Content-disposition', 'attachment; filename=dados_formatados.txt');
-        res.setHeader('Content-type', 'text/plain');    
-        // Envie o arquivo de texto diretamente como resposta
-        res.send(arquivoTexto);
-      } catch (error) {
-        console.error('Erro ao fazer parsing do JSON:', error);
-      }
+  
+          // Escreva o arquivo de texto no servidor
+          fs.writeFile(caminhoArquivoTexto, arquivoTexto, 'utf8', (err) => {
+            if (err) {
+              console.error('Erro ao escrever o arquivo de texto:', err);
+              reject(err);
+            } else {
+              console.log('Arquivo de texto salvo com sucesso:', caminhoArquivoTexto);
+              resolve(caminhoArquivoTexto); // Resolve com o caminho do arquivo de texto salvo
+            }
+          });
+        } catch (error) {
+          console.error('Erro ao fazer parsing do JSON:', error);
+          reject(error);
+        }
+      });
     });
-  });  
-}
+  }
+  
 
 async function executarFuncoesEmSequencia  (request)  {
   return new Promise(async (resolve, reject) => {
