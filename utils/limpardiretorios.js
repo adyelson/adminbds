@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 function limparDiretorios() {
-  const comandos = ['sudo rm arquivos/descompactados/*', 'sudo rm arquivos/json/*', 'sudo rm arquivos/recebidos/*'];
+  const comandos = ['sudo rm ..arquivos/descompactados/*', 'sudo rm ..arquivos/json/*', 'sudo rm ..arquivos/recebidos/*'];
   comandos.forEach(comando => {
     exec(comando, (erro, stdout, stderr) => {
       if (erro) {

@@ -2,8 +2,8 @@ const { exec } = require('child_process');
 function compactar(nomeDoArquivo, res) {
   return new Promise((resolve, reject) => {
     const nomeSemExtensao = nomeDoArquivo.replace('.json', '');
-    let caminhoDestino = `${__dirname}/arquivos/arquivosEXP/${nomeSemExtensao}.EXP`;
-    let caminhoOrigem = `${__dirname}/arquivos/txtsalvo/${nomeSemExtensao}`
+    let caminhoDestino = `../arquivos/arquivosEXP/${nomeSemExtensao}.EXP`;
+    let caminhoOrigem = `../arquivos/txtsalvo/${nomeSemExtensao}`
     const comandoCompactar = `7z a ${caminhoDestino} ${caminhoOrigem}`;
     exec(comandoCompactar, (error, stdout, stderr) => {
       if (error) {

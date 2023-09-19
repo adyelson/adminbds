@@ -1,7 +1,7 @@
 function lerArquivoEnviado(nomeDoArquivo) {
     return new Promise((resolve, reject) => {
         const nomeSemExtensao = nomeDoArquivo.replace('.EXP', '');
-        const arquivo = `${__dirname}/arquivos/descompactados/${nomeSemExtensao}`;
+        const arquivo = `../arquivos/descompactados/${nomeSemExtensao}`;
         fs.readFile(arquivo, 'utf8', (err, content) => {
             if (err) {
                 console.error(`Erro ao ler o arquivo: ${err}`);
@@ -55,7 +55,7 @@ function lerArquivoEnviado(nomeDoArquivo) {
                 }
             }
             const jsonDados = JSON.stringify(dados, null, 2); // Convertendo para formato JSON
-            const jsonFilePath = `${__dirname}/arquivos/json/${nomeSemExtensao}.json`;
+            const jsonFilePath = `../arquivos/json/${nomeSemExtensao}.json`;
             fs.writeFile(jsonFilePath, jsonDados, 'utf8', err => {
                 if (err) {
                     console.error('Erro ao salvar arquivo JSON:', err);
