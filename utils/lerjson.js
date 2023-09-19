@@ -1,7 +1,8 @@
+var fs = require("fs");
 function lerJson(nomeDoArquivo) {
   return new Promise((resolve, reject) => {
     const nomeSemExtensao = nomeDoArquivo.replace('.EXP', '');
-    const caminhoArquivoJSON = `../arquivos/json/${nomeSemExtensao}.json`;
+    const caminhoArquivoJSON = `/workspace/adminbds/arquivos/json/${nomeSemExtensao}.json`;
     fs.readFile(caminhoArquivoJSON, 'utf8', (err, content) => {
       if (err) {
         console.error('Erro ao ler o arquivo JSON:', err);

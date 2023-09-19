@@ -1,5 +1,6 @@
 const { lerArquivoEnviado } = require('./lerarquivoenviado');
 const { descompactar } = require('./descompactar');
+const { lerJson } = require('./lerjson');
 async function sequenciaEnviando  (request)  {
   return new Promise(async (resolve, reject) => {
     try {
