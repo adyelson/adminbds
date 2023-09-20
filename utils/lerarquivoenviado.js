@@ -1,4 +1,5 @@
 var fs = require("fs");
+const { salvarEmJson } = require('./salvaremjson');
 function lerArquivoEnviado(nomeDoArquivo) {
     return new Promise((resolve, reject) => {
         const nomeSemExtensao = nomeDoArquivo.replace('.EXP', '');
@@ -18,6 +19,15 @@ function lerArquivoEnviado(nomeDoArquivo) {
                     if (linha !== '') {
                         if (chaves.length == 0) { // Na primeira linha de dados, gera as chaves
                             chaves = linha.split('\t').map(campo => campo.replace('# ', '').toLowerCase());
+                            const linhaCount = linhas[linhaAtual+1].trim();
+                            const camposCount = linhaCount.split('\t');
+                            if(camposCount.length > chaves.length){
+                                let diferencaCount = camposCount.length - chaves.length;
+                                for( let contador= 1; contador<=diferencaCount; contador++){
+                                    chaves.push(`campo${contador}`);                                    
+                                }
+                            }
+
                         } else {
                             const campos = linha.split('\t');
                             const registro = {};
@@ -32,17 +42,20 @@ function lerArquivoEnviado(nomeDoArquivo) {
                     }
                 }
             } else {
-                for (let linhaAtual = 13; linhaAtual < linhas.length; linhaAtual++) {
+                for (let linhaAtual = 12; linhaAtual < linhas.length; linhaAtual++) {
                     const linha = linhas[linhaAtual].trim();
                     if (linha !== '') {
                         if (chaves.length == 0) { // Na primeira linha de dados, gera as chaves
+                            
                             let tamanho = linha.split(';');
+                            tamanho.pop();
                             tamanho.forEach((value, index) => {
-                                chaves.push(index);
+                                chaves.push(`campo${index}`);
                                 console.log(chaves)
                             });
-                        } else {
+                        } 
                             const campos = linha.split(';');
+                            campos.pop();
                             const registro = {};
                             campos.forEach((valor, index) => {
                                 const chave = chaves[index];
@@ -51,21 +64,11 @@ function lerArquivoEnviado(nomeDoArquivo) {
                                 }
                             });
                             dados.push(registro);
-                        }
+                        
                     }
                 }
             }
-            const jsonDados = JSON.stringify(dados, null, 2); // Convertendo para formato JSON
-            const jsonFilePath = `/workspace/adminbds/arquivos/json/${nomeSemExtensao}.json`;
-            fs.writeFile(jsonFilePath, jsonDados, 'utf8', err => {
-                if (err) {
-                    console.error('Erro ao salvar arquivo JSON:', err);
-                    reject(err);
-                    return;
-                }
-                console.log('Arquivo JSON salvo:', jsonFilePath);
-                resolve(jsonFilePath);
-            });
+            resolve(salvarEmJson(dados, nomeSemExtensao));
         });
     });
 }

@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const path = require('path');
 var fs = require("fs");
 function compactar(nomeDoArquivo, res) {
   return new Promise((resolve, reject) => {
