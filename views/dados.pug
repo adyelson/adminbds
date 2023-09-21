@@ -47,24 +47,19 @@ script.
  
   // Adicione um ouvinte de evento ao botão de download/upload
   downloadButton.addEventListener("click", () => {
-     const jsonData = JSON.stringify(data);
-
-  // Gere um nome de arquivo único, por exemplo, usando um timestamp
-
-
+    const jsonData = JSON.stringify(data);
     const formData = new FormData();
     formData.append("file", new Blob([jsonData], { type: "application/json" }), originalname.replace('.EXP', '.json'));
 
-   fetch("/upload-json-and-convert", {
+  fetch("/downloadexp", {
     method: "POST",
     body: formData,
   })
     .then((response) => response.text()) // Recebe o texto formatado do servidor
     .then((formattedText) => {
       // Aqui você pode fazer algo com o texto formatado, se necessário
-      console.log("Texto formatado recebido: " + formattedText);
-
-      // Após receber o texto formatado, faça o download do arquivo
+      let textoJson = JSON.parse(formattedText)
+      downloadFileFromServer(textoJson.nomeArquivo);
      
     })
     .catch((error) => {
@@ -72,7 +67,30 @@ script.
     });
   });
 
-
+  function downloadFileFromServer(caminho) {
+  // Use o fetch para buscar o arquivo do servidor
+  fetch(caminho)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erro ao buscar o arquivo do servidor');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      // Crie a URL a partir dos dados obtidos
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      let filename = caminho;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+    });
+  }
   
 
     // Evento de clique no botão "Inserir Linha"

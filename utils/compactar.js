@@ -19,7 +19,7 @@ function compactar(nomeDoArquivo, res) {
       res.setHeader('Content-type', 'application/x-7z-compressed');
       const fileStream = fs.createReadStream(caminhoDestino);
       fileStream.pipe(res);
-      res.json({ caminho: caminhoDestino });
+      res.json({ caminho: caminhoDestino, nomeArquivo: `${nomeSemExtensao}.EXP` });
     });
   });
 }

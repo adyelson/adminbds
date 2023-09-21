@@ -8,14 +8,15 @@ var fs = require("fs");
 const { PassThrough } = require('stream');
 const porta = 3000;
 const { checar7zip } = require('./utils/checar7zip');
-const {limparDiretorios} = require('./utils/limpardiretorios');
-const {sequenciaEnviando} = require('./utils/sequenciaenviando');
-const {sequenciaRequisitando} = require('./utils/sequeciarequisitando');
+const { limparDiretorios } = require('./utils/limpardiretorios');
+const { sequenciaEnviando } = require('./utils/sequenciaenviando');
+const { sequenciaRequisitando } = require('./utils/sequeciarequisitando');
 checar7zip('p7zip-full')
     .then(() => {
         console.log('Continuando com o restante do servidor...');
         // SERVIDOR
         app.use(express.static('public'));
+        app.use(express.static('arquivos/arquivosEXP'));
         app.set("view engine", "pug");
         app.set("/views", __dirname); // Defina o diretório de visualizações
         http.listen(porta, () => {
@@ -48,12 +49,12 @@ checar7zip('p7zip-full')
                     const keys = Object.keys(data[0]);
                     let originalname = request.file.originalname;
                     response.render("dados", { keys, data, originalname });
-                    //limparDiretorios();
+                    limparDiretorios();
                 });
             })
         });
 
-        app.post("/upload-json-and-convert", async (request, response) => {
+        app.post("/downloadexp", async (request, response) => {
             var file = "arquivos/preparacaojson/" + request.file.originalname;
             let dados;
             fs.readFile(request.file.path, (err, data) => {
@@ -67,8 +68,8 @@ checar7zip('p7zip-full')
                             arquivo: request.file.originalname
                         }
                         dados = await sequenciaRequisitando(request, response);
-                    }
-                    //limparDiretorios();
+                    }    
+                    limparDiretorios();  
                 });
             })
         });
