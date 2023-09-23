@@ -7,6 +7,7 @@ function limparDiretorios() {
   'sudo rm /workspace/adminbds/arquivos/preparacaojson/*',
   'sudo rm /workspace/adminbds/arquivos/txtsalvo/*',
   'sudo rm /workspace/adminbds/arquivos/arquivosEXP/*',
+  'sudo rm /workspace/adminbds/temp/*'
 ];
   comandos.forEach(comando => {
     exec(comando, (erro, stdout, stderr) => {

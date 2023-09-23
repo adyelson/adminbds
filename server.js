@@ -5,7 +5,7 @@ const http = require('http').createServer(app);// rever
 const pug = require("pug");
 var multer = require("multer");
 var fs = require("fs");
-const { PassThrough } = require('stream');
+//const { PassThrough } = require('stream');
 const porta = 3000;
 const { checar7zip } = require('./utils/checar7zip');
 const { limparDiretorios } = require('./utils/limpardiretorios');
@@ -26,8 +26,6 @@ checar7zip('p7zip-full')
             resp.sendFile(__dirname + '/');
         })
         app.use(multer({ dest: "temp" }).single("file"));
-        app.use(express.json());
-        app.use(express.json({ limit: "10mb" }));
         app.post("/uploadEXP", async (request, response) => {
             var file = "arquivos/recebidos/" + request.file.originalname;
             let dados;
