@@ -1,0 +1,25 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Dashboard
+  body
+    h1 Dashboard
+    p(class="nome")= name
+    form(action="/logout", method="POST")
+      input(type="submit", value="Sair")
+      br
+      br
+      br
+      br
+
+    form(action="uploadEXP", method="POST", enctype="multipart/form-data")
+      label(for="file") EXP:
+      input(type="file", name="file", id="file")
+      br
+      br
+      input(type="submit", value="Enviar")
+
+
+    
