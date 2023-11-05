@@ -3,6 +3,12 @@ html
     title Tabela Editável
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css")
   body
+    div#coordinates-input
+    input(type="text", id="latitude-input", placeholder="Latitude")
+    input(type="text", id="longitude-input", placeholder="Longitude")
+    button(id="obter-horarios-button") Obter Horários
+    br
+    p(class="horarios") #{horarios}
     button(id="download-button") Download .EXP
     button(id="insert-button") Inserir Linha
     table(id="editable-table")
@@ -16,6 +22,7 @@ html
             button.delete-button(type="button") X
           each value in item
             td.content(contenteditable="true")= value
+            
 
 script.
   // JavaScript para tornar a tabela editável
@@ -92,9 +99,37 @@ script.
     });
   }
   
+  function atualizarHorariosNaPagina(sunriseTime, sunsetTime) {
+    const horariosSol = document.getElementById("horarios-sol");
+    horariosSol.innerHTML = `Horário do nascer do sol: ${sunriseTime}<br>Horário do pôr do sol: ${sunsetTime}`;
+  }
+  // Aqui você pode fazer uma solicitação ao servidor para obter os horários do nascer e pôr do sol
+  // Por exemplo, você pode usar o fetch para fazer uma solicitação ao servidor e mostrar os horários em um alert
+  // Substitua a lógica a seguir de acordo com a forma como você deseja obter os horários do servidor
+
+  document.getElementById('obter-horarios-button').addEventListener('click', () => {
+    const latitude = document.getElementById('latitude-input').value;
+    const longitude = document.getElementById('longitude-input').value;
+      if (latitude && longitude) {
+        obterHorariosDoSol(parseFloat(latitude), parseFloat(longitude));
+      } else {
+        alert('Por favor, insira valores válidos de latitude e longitude.');
+      }
+  });
+  function obterHorariosDoSol(latitude, longitude) {
+  fetch(`/obterHorarios?latitude=${latitude}&longitude=${longitude}`)
+    .then((response) => response.json())
+    .then((horarios) => {
+      // Exibir os horários em um alert
+     
+      atualizarHorariosNaPagina(horarios.sunriseTime, horarios.sunsetTime);    })
+    .catch((error) => {
+      console.error('Erro ao obter os horários:', error);
+    });
+  }
 
     // Evento de clique no botão "Inserir Linha"
-    const insertButton = document.getElementById("insert-button");
+  const insertButton = document.getElementById("insert-button");
     insertButton.addEventListener("click", () => {
     // Crie uma nova linha vazia com o mesmo número de células que os cabeçalhos
     const newRow = table.insertRow(1); // Insere no início da tabela

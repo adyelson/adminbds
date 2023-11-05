@@ -15,6 +15,7 @@ const { limparDiretorios } = require('./utils/limpardiretorios');
 const { sequenciaEnviando } = require('./utils/sequenciaenviando');
 const { criarBancoDeDados } = require('./utils/criadb.js');
 const { sequenciaRequisitando } = require('./utils/sequeciarequisitando');
+const { sunRiseSet } = require('./utils/chamadaapi');
 
 const sqlite3 = require('sqlite3').verbose();
 const dbFile = 'mydb.sqlite';
@@ -122,6 +123,24 @@ checar7zip('p7zip-full')
       });
     }
     
+    app.get('/obterHorarios', async (req, res) => {
+      try {
+        const latitude = req.query.latitude; // Obtenha a latitude da consulta
+        const longitude = req.query.longitude; // Obtenha a longitude da consulta
+    
+        if (!latitude || !longitude) {
+          return res.status(400).json({ error: 'Latitude e/ou longitude ausentes' });
+        }
+    
+        const horarios = await sunRiseSet(latitude, longitude);
+    
+        console.log(horarios);
+        res.render('dados', { horarios: horarios });
+      } catch (error) {
+          console.error('Erro ao obter os horários do nascer e pôr do sol:', error);
+          res.status(500).json({ error: 'Erro ao obter os horários do sol' });
+      }
+  });
   
     app.post("/uploadEXP", async (request, response) => {
       var file = "arquivos/recebidos/" + request.file.originalname;
