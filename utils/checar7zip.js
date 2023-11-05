@@ -1,10 +1,10 @@
 const { exec } = require('child_process');
 function checar7zip(programa) {
   return new Promise((resolve, reject) => {
-    const comandoVerificar = `dpkg -l | grep ${programa}`;
+    const comandoVerificar = `sudo dpkg -l | grep ${programa}`;
     exec(comandoVerificar, (erro, stdout, stderr) => {
       console.log(`${programa} não está instalado. Tentando instalar...`);
-      const comandoInstalar = `apt-get install ${programa} -y`;
+      const comandoInstalar = `sudo apt-get install ${programa} -y`;
       exec(comandoInstalar, (erroInstalar, stdoutInstalar, stderrInstalar) => {
         if (erroInstalar) {
           console.error(`Erro ao instalar o ${programa}: ${erroInstalar}`);

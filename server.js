@@ -28,9 +28,9 @@ if (fs.existsSync(dbFile)) {
 }
 
 
-checar7zip('p7zip-full')
-  .then(() => {
-    console.log('Continuando com o restante do servidor...');
+// checar7zip('p7zip-full')
+//   .then(() => {
+//     console.log('Continuando com o restante do servidor...');
 
     function autenticacaoMiddleware(req, res, next) {
       if (req.session && req.session.autenticado) {
@@ -187,6 +187,6 @@ checar7zip('p7zip-full')
         });
       })
     });
-  });
+  // });
 
 
