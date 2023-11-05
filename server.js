@@ -49,7 +49,7 @@ if (fs.existsSync(dbFile)) {
     app.set("view engine", "pug");
     app.set("/views", __dirname); // Defina o diretório de visualizações
     app.use(express.static('public'));
-    app.use(express.static('arquivos/arquivosEXP'));
+    app.use(express.static('arquivos/txtsalvo'));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(multer({ dest: "temp" }).single("file"));
     app.use(session({
@@ -163,13 +163,14 @@ if (fs.existsSync(dbFile)) {
           const keys = Object.keys(data[0]);
           let originalname = request.file.originalname;
           response.render("dados", { keys, data, originalname });
-          limparDiretorios();
+          //limparDiretorios();
         });
       })
     });
 
     app.post("/downloadexp", async (request, response) => {
-      var file = "arquivos/preparacaojson/" + request.file.originalname;
+      console.log(request.file.originalname);
+      var file = "arquivos/txtsalvo/" + request.file.originalname;
       let dados;
       fs.readFile(request.file.path, (err, data) => {
         if (err) { console.log("Erro readFile: " + err); }
@@ -183,7 +184,7 @@ if (fs.existsSync(dbFile)) {
             }
             dados = await sequenciaRequisitando(request, response);
           }
-          limparDiretorios();
+          //limparDiretorios();
         });
       })
     });
