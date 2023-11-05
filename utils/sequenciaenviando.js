@@ -4,7 +4,7 @@ const { lerJson } = require('./lerjson');
 async function sequenciaEnviando  (request)  {
   return new Promise(async (resolve, reject) => {
     try {
-      await descompactar(request.file.originalname);
+      //await descompactar(request.file.originalname);
       await lerArquivoEnviado(request.file.originalname);
       dados = await lerJson(request.file.originalname);      
       console.log('Ambas as funções foram concluídas.' + JSON.stringify(dados));      
