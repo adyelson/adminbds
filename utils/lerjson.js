@@ -3,7 +3,7 @@ var fs = require("fs");
 function lerJson(nomeDoArquivo) {
   return new Promise((resolve, reject) => {
     const nomeSemExtensao = nomeDoArquivo; // Mantive a extensão original
-    const caminhoArquivoJSON = `/workspace/adminbds/arquivos/json/${nomeSemExtensao}.json`;
+    const caminhoArquivoJSON = `./arquivos/json/${nomeSemExtensao}.json`;
 
     fs.readFile(caminhoArquivoJSON, 'utf8', (err, content) => {
       if (err) {

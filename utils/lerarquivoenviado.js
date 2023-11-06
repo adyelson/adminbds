@@ -3,7 +3,7 @@ const { salvarEmJson } = require('./salvaremjson');
 function lerArquivoEnviado(nomeDoArquivo) {
     return new Promise((resolve, reject) => {
         const nomeSemExtensao = nomeDoArquivo//.replace('.EXP', '');
-        const arquivo = `/workspace/adminbds/arquivos/recebidos/${nomeSemExtensao}`;
+        const arquivo = `./arquivos/recebidos/${nomeSemExtensao}`;
         fs.readFile(arquivo, 'utf8', (err, content) => {
             if (err) {
                 console.error(`Erro ao ler o arquivo: ${err}`);

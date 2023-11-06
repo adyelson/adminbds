@@ -1,9 +1,9 @@
 var fs = require("fs");
 function converterJsonPtexto(nomeDoArquivo) {
   return new Promise((resolve, reject) => {
-    const caminhoArquivoJSON = `/workspace/adminbds/arquivos/txtsalvo/${nomeDoArquivo}`; // Adicione a extensão .json ao 
+    const caminhoArquivoJSON = `./arquivos/txtsalvo/${nomeDoArquivo}`; // Adicione a extensão .json ao 
     const nomeSemExtensao = nomeDoArquivo.replace('.json', '');
-    const caminhoArquivoTexto = `/workspace/adminbds/arquivos/txtsalvo/${nomeSemExtensao}`; // Caminho para o arquivo de texto
+    const caminhoArquivoTexto = `./arquivos/txtsalvo/${nomeSemExtensao}`; // Caminho para o arquivo de texto
     let arquivoTexto = '';
     fs.readFile(caminhoArquivoJSON, 'utf8', (err, content) => {
       if (err) {

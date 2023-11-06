@@ -132,7 +132,7 @@ app.get('/obterHorarios', async (req, res) => {
       return res.status(400).json({ error: 'Latitude e/ou longitude ausentes' });
     }
 
-    const horarios = await sunRiseSet(latitude, longitude);
+    const horarios = sunRiseSet(latitude, longitude);
 
     console.log("HORARIOS:" +horarios);
     res.render('dados', { horarios: horarios });

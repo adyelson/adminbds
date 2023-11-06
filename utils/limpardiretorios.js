@@ -2,10 +2,10 @@ const fs = require("fs");
 
 async function limparDiretorios() {
   const pastas = [
-    '/workspace/adminbds/arquivos/recebidos',
-    '/workspace/adminbds/arquivos/json',
-    '/workspace/adminbds/arquivos/txtsalvo',
-    '/workspace/adminbds/temp'
+    './arquivos/recebidos',
+    './arquivos/json',
+    './arquivos/txtsalvo',
+    './temp'
   ];
 
   for (const pasta of pastas) {

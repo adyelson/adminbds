@@ -4,7 +4,7 @@ var fs = require("fs");
 function compactar(nomeDoArquivo, res) {
   return new Promise((resolve, reject) => {
     const nomeSemExtensao = nomeDoArquivo.replace('.json', '');
-    let caminhoOrigem = `/workspace/adminbds/arquivos/txtsalvo/${nomeSemExtensao}`   
+    let caminhoOrigem = `./arquivos/txtsalvo/${nomeSemExtensao}`   
     resolve(caminhoOrigem);
     res.setHeader('Content-disposition', `attachment; filename=${path.basename(caminhoOrigem)}`);
     res.setHeader('Content-type', 'text/plain');
