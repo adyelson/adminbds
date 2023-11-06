@@ -8,8 +8,11 @@ html
     input(type="text", id="longitude-input", placeholder="Longitude")
     button(id="obter-horarios-button") Obter Horários
     br
-    p(class="horarios") #{horarios}
-    button(id="download-button") Download .EXP
+    h1 Horários do Nascer e Pôr do Sol
+    p Nascer do Sol: #{horarios.sunriseTime}
+    p Pôr do Sol: #{horarios.sunsetTime}
+    br
+    button(id="download-button") Download
     button(id="insert-button") Inserir Linha
     table(id="editable-table")
       tr
@@ -117,6 +120,7 @@ script.
         alert('Por favor, insira valores válidos de latitude e longitude.');
       }
   });
+
   function obterHorariosDoSol(latitude, longitude) {
   fetch(`/obterHorarios?latitude=${latitude}&longitude=${longitude}`)
     .then((response) => response.json())

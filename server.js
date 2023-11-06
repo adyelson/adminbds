@@ -134,13 +134,13 @@ app.get('/obterHorarios', async (req, res) => {
 
     const horarios = sunRiseSet(latitude, longitude);
 
-    console.log("HORARIOS:" +horarios);
-    res.render('dados', { horarios: horarios });
+    res.json({ sunriseTime: horarios.sunrise, sunsetTime: horarios.sunset });
   } catch (error) {
     console.error('Erro ao obter os horários do nascer e pôr do sol:', error);
     res.status(500).json({ error: 'Erro ao obter os horários do sol' });
   }
 });
+
 
 app.post("/uploadEXP", async (request, response) => {
   var file = "arquivos/recebidos/" + request.file.originalname;

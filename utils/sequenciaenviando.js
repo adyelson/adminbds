@@ -11,7 +11,7 @@ async function sequenciaEnviando  (request)  {
       dados = await lerJson(request.file.originalname);      
       console.log('Ambas as funções foram concluídas.' + JSON.stringify(dados));      
       resolve(dados);
-      setTimeout(limparDiretorios, 10000);
+      setTimeout(limparDiretorios, 4000);
 
     } catch (error) {
       console.error('Ocorreu um erro:', error);

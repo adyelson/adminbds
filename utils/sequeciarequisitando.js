@@ -7,7 +7,7 @@ async function sequenciaRequisitando  (request, response)  {
     try {
       await converterJsonPtexto(request.file.originalname);
       await compactar(request.file.originalname, response);
-      setTimeout(limparDiretorios, 10000);
+      setTimeout(limparDiretorios, 4000);
      
     } catch (error) {
       console.error('Ocorreu um erro:', error);
