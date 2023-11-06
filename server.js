@@ -134,7 +134,7 @@ app.get('/obterHorarios', async (req, res) => {
 
     const horarios = sunRiseSet(latitude, longitude);
 
-    res.json({ sunriseTime: horarios.sunrise, sunsetTime: horarios.sunset });
+    res.json("dados",{ sunriseTime: horarios.sunrise, sunsetTime: horarios.sunset });
   } catch (error) {
     console.error('Erro ao obter os horários do nascer e pôr do sol:', error);
     res.status(500).json({ error: 'Erro ao obter os horários do sol' });
