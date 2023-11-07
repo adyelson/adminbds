@@ -2,16 +2,25 @@ html
   head
     title Tabela Editável
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css")
-  body
+  body 
+    h3 Horários do Nascer e Pôr do Sol
+    p Utilize pontos pra separar os decimais
     div#coordinates-input
-    input(type="text", id="latitude-input", placeholder="Latitude")
-    input(type="text", id="longitude-input", placeholder="Longitude")
+    p Latitude 
+    input(type="text", id="latitude-input", placeholder="Ex: -23.87374")
+    
+    p Longitude 
+    input(type="text", id="longitude-input", placeholder="Ex: -47.123374")
+    br
+    br
     button(id="obter-horarios-button") Obter Horários
     br
-    h1 Horários do Nascer e Pôr do Sol
-  
-    br
+   
+    p(id="horarios-sol")
+    h3 Dados Processados
+    
     button(id="download-button") Download
+    
     button(id="insert-button") Inserir Linha
     table(id="editable-table")
       tr
@@ -101,36 +110,37 @@ script.
       console.error('Erro:', error);
     });
   }
-  
-  function atualizarHorariosNaPagina(sunriseTime, sunsetTime) {
-    const horariosSol = document.getElementById("horarios-sol");
-    horariosSol.innerHTML = `Horário do nascer do sol: ${sunriseTime}<br>Horário do pôr do sol: ${sunsetTime}`;
-  }
-  // Aqui você pode fazer uma solicitação ao servidor para obter os horários do nascer e pôr do sol
-  // Por exemplo, você pode usar o fetch para fazer uma solicitação ao servidor e mostrar os horários em um alert
-  // Substitua a lógica a seguir de acordo com a forma como você deseja obter os horários do servidor
-
+   
   document.getElementById('obter-horarios-button').addEventListener('click', () => {
     const latitude = document.getElementById('latitude-input').value;
     const longitude = document.getElementById('longitude-input').value;
-      if (latitude && longitude) {
-        obterHorariosDoSol(parseFloat(latitude), parseFloat(longitude));
-      } else {
-        alert('Por favor, insira valores válidos de latitude e longitude.');
-      }
+    
+    if (latitude && longitude) {
+      obterHorariosDoSol(parseFloat(latitude), parseFloat(longitude));
+    } else {
+      alert('Por favor, insira valores válidos de latitude e longitude.');
+    }
   });
 
-  function obterHorariosDoSol(latitude, longitude) {
-  fetch(`/obterHorarios?latitude=${latitude}&longitude=${longitude}`)
-    .then((response) => response.json())
-    .then((horarios) => {
-      // Exibir os horários em um alert
-     
-      atualizarHorariosNaPagina(horarios.sunriseTime, horarios.sunsetTime);    })
-    .catch((error) => {
-      console.error('Erro ao obter os horários:', error);
-    });
+  async function obterHorariosDoSol(latitude, longitude) {
+    const horariosSol = document.getElementById("horarios-sol");
+
+    try {
+      // Fazer a requisição e aguardar a resposta
+      const response = await fetch(`/obterHorarios?latitude=${latitude}&longitude=${longitude}`);
+      console.log(response);
+      if (response.ok) {
+        const horarios = await response.json();
+        horariosSol.innerHTML = `Horário do nascer do sol: ${horarios.sunriseTime}<br>Horário do pôr do sol: ${horarios.sunsetTime}`;
+      } else {
+        console.error("Erro na requisição:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar os horários:', error);
+    }
   }
+  
+
 
     // Evento de clique no botão "Inserir Linha"
   const insertButton = document.getElementById("insert-button");

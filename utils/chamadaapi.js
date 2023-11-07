@@ -26,10 +26,10 @@ function sunRiseSet(latitude, longitude) {
                     const timezoneOffsetMinutes = Math.abs((timezoneOffset % 3600) / 60);
 
 
-                    console.log(`Horário do nascer do sol: ${sunriseTime}`);
-                    console.log(`Horário do pôr do sol: ${sunsetTime}`);
+                   
                     const fuso = `Fuso horário: ${timezoneOffset > 0 ? '+' : '-'}${timezoneOffsetHours.toString().padStart(2, '0')}:${timezoneOffsetMinutes.toString().padStart(2, '0')}`;
-                    return { sunriseTime, sunsetTime, fuso };
+                    console.log({ sunriseTime, sunsetTime, fuso })
+                    resolve({ sunriseTime, sunsetTime, fuso });
                 } 
                 catch (error) {
                     reject(error);

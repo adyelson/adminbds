@@ -12,12 +12,14 @@ async function limparDiretorios() {
     const files = await fs.promises.readdir(pasta);
 
     for (const file of files) {
-      const caminhoArquivo = `${pasta}/${file}`;
-      try {
-        await fs.promises.unlink(caminhoArquivo);
-        console.log(`Arquivo ${caminhoArquivo} excluído com sucesso.`);
-      } catch (err) {
-        console.error(`Erro ao excluir o arquivo ${caminhoArquivo}:`, err);
+      if(file!='nodelete.txt'){
+        const caminhoArquivo = `${pasta}/${file}`;
+        try {
+          await fs.promises.unlink(caminhoArquivo);
+          console.log(`Arquivo ${caminhoArquivo} excluído com sucesso.`);
+        } catch (err) {
+          console.error(`Erro ao excluir o arquivo ${caminhoArquivo}:`, err);
+        }
       }
     }
   }

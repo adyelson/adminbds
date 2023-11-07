@@ -132,9 +132,9 @@ app.get('/obterHorarios', async (req, res) => {
       return res.status(400).json({ error: 'Latitude e/ou longitude ausentes' });
     }
 
-    const horarios = sunRiseSet(latitude, longitude);
-
-    res.json("dados",{ sunriseTime: horarios.sunrise, sunsetTime: horarios.sunset });
+    const horarios = await sunRiseSet(latitude, longitude);
+    console.log(horarios);
+    res.json(horarios);
   } catch (error) {
     console.error('Erro ao obter os horários do nascer e pôr do sol:', error);
     res.status(500).json({ error: 'Erro ao obter os horários do sol' });
@@ -162,7 +162,7 @@ app.post("/uploadEXP", async (request, response) => {
       let data = dados;
       const keys = Object.keys(data[0]);
       let originalname = request.file.originalname;
-      response.render("dados", { keys, data, originalname });
+      response.render("dados", { keys, data, originalname, sunriseTime: 0, sunsetTime: 0 });
      
     });
   })
