@@ -1,0 +1,77 @@
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+   
+   
+    
+  }
+
+  .centro{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+  h3 {
+    color: #333;
+  }
+
+  p {
+    color: #666;
+  }
+
+  #coordinates-input {
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+
+  input {
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  button, .custom-button  {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    
+   
+  }
+
+ 
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+
+  .delete-button {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  th {
+    background-color: #333;
+    color: #fff;
+  }

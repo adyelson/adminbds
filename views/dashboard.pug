@@ -3,23 +3,26 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Dashboard
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css")
+    link(rel="stylesheet", href="styles.css") 
+    title Tela inicial
   body
-    h1 Dashboard
-    p(class="nome") #{name} Seja bem-vindo!
-    form(action="/logout", method="POST")
-      input(type="submit", value="Sair")
-      br
-      br
-      br
-      br
+    div(class="centro")
+      h1 Tela Inicial
+      p(class="nome") #{name} Seja bem-vindo!
+      form(action="/logout", method="POST")
+        input(type="submit", value="Sair",class="custom-button")
+        br
+        br
+        br
+        br
 
-    form(action="uploadEXP", method="POST", enctype="multipart/form-data")
-      label(for="file") EXP:
-      input(type="file", name="file", id="file")
-      br
-      br
-      input(type="submit", value="Enviar")
+      form(action="upload", method="POST", enctype="multipart/form-data")
+        label(for="file")
+        input(type="file", name="file", id="file")
+        br
+        br
+        input(type="submit", value="Enviar",class="custom-button")
 
 
     

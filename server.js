@@ -48,6 +48,13 @@ function autenticacaoMiddleware(req, res, next) {
 
 app.set("view engine", "pug");
 app.set("/views", __dirname); // Defina o diretório de visualizações
+// Definir o tipo MIME correto para arquivos CSS
+app.use((req, res, next) => {
+  if (req.url.endsWith('.css')) {
+    res.header('Content-Type', 'text/css');
+  }
+  next();
+});
 app.use(express.static('public'));
 app.use(express.static('arquivos/txtsalvo'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -57,6 +64,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
 }));
+
+
 
 
 http.listen(porta, () => {
@@ -142,7 +151,7 @@ app.get('/obterHorarios', async (req, res) => {
 });
 
 
-app.post("/uploadEXP", async (request, response) => {
+app.post("/upload", async (request, response) => {
   var file = "arquivos/recebidos/" + request.file.originalname;
   let dados;
   fs.readFile(request.file.path, (err, data) => {
@@ -168,7 +177,7 @@ app.post("/uploadEXP", async (request, response) => {
   })
 });
 
-app.post("/downloadexp", async (request, response) => {
+app.post("/download", async (request, response) => {
   console.log(request.file.originalname);
   var file = "arquivos/txtsalvo/" + request.file.originalname;
   let dados;
