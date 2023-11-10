@@ -8,9 +8,9 @@ function criarBancoDeDados(db) {
 
     // Certifique-se de fechar o banco de dados quando não estiver em uso
 
-    const name = 'Admnistrador';
-    const username = '123';
-    const password = '123';
+    const name = 'DEV+ GBDS';
+    const username = 'univesp';
+    const password = 'univesp';
 
     db.run('INSERT INTO users (name, username, password) VALUES (?,?, ?)', [name, username, password], function (err) {
         if (err) {
