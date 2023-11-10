@@ -11,6 +11,11 @@ html
         margin-top: 10px;
       }
   body 
+    div(class="opcoes-fonte")
+      p(class="acessibilidade-texto") Escolha o tamanho da fonte:
+      button(type="button", onclick="mudarFonte('fonte-padrao')") Padrão
+      button(type="button", onclick="mudarFonte('fonte-grande')") Grande
+      button(type="button", onclick="mudarFonte('fonte-maior')") Muito Grande
     div(class="centro")
       h3 Horários do Nascer e Pôr do Sol
       p Utilize pontos pra separar os decimais
@@ -26,7 +31,7 @@ html
       br
     
       p(id="horarios-sol")
-    div  
+    div(class="dados-processados")
       h3 Dados Processados
       button(id="insert-button") Inserir Linha
       button(id="download-button") Download
@@ -48,6 +53,14 @@ html
               
 
 script.
+
+  function mudarFonte(classeFonte) {
+      document.querySelector('.centro').classList.remove('fonte-padrao', 'fonte-grande', 'fonte-maior');
+      document.querySelector('.centro').classList.add(classeFonte);
+       document.querySelector('.dados-processados').classList.remove('fonte-padrao', 'fonte-grande', 'fonte-maior');
+      document.querySelector('.dados-processados').classList.add(classeFonte);
+    }
+
   // JavaScript para tornar a tabela editável
   const table = document.getElementById("editable-table");
   const downloadButton = document.getElementById("download-button");

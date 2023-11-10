@@ -1,8 +1,13 @@
+  
+
   body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
-   
-   
+    box-sizing: border-box;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-items: start;
     
   }
 
@@ -75,3 +80,58 @@
     background-color: #333;
     color: #fff;
   }
+
+  /* Estilos para a fonte padrão */
+.fonte-padrao {
+  font-size: 16px; /* Tamanho padrão da fonte */
+}
+
+/* Estilos para a fonte grande */
+.fonte-grande {
+  font-size: 28px; /* Tamanho maior para a fonte grande */
+}
+
+/* Estilos para a fonte maior */
+.fonte-maior {
+  font-size: 40px; /* Tamanho ainda maior para a fonte maior */
+}
+
+/* Outros estilos gerais */
+
+.centro {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.opcoes-fonte {
+  text-align: center;
+  background-color: gray;
+  
+}
+.opcoes-fonte button{
+  font-size: 28px;
+ 
+}
+
+button {
+  margin: 5px;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+
+.erro-mensagem {
+  color: red;
+}
+
+.centro input, .centro button, .dados-processados table, .dados-processados button {
+  font-size: inherit; /* Herda o tamanho da fonte do elemento pai (.centro) */
+  padding: 5px; /* Ajuste conforme necessário */
+  margin: 5px; /* Ajuste conforme necessário */
+}
+
+.acessibilidade-texto{
+  font-size: 28px;
+  color: black;
+  font-weight: bold;
+}

@@ -7,7 +7,12 @@ html(lang="en")
     link(rel="stylesheet", href="styles.css") 
     title Login
   body
-    div(class="centro")
+    div(class="opcoes-fonte")
+      p(class="acessibilidade-texto") Escolha o tamanho da fonte:
+      button(type="button", onclick="mudarFonte('fonte-padrao')") Padrão
+      button(type="button", onclick="mudarFonte('fonte-grande')") Grande
+      button(type="button", onclick="mudarFonte('fonte-maior')") Muito Grande
+    div(class="centro fonte-padrao")
       h1 Login
       form(action="/login", method="POST")
         label(for="username") Username:
@@ -21,3 +26,11 @@ html(lang="en")
         // Adicione um elemento para exibir a mensagem de erro
         if mensagemErro
           p(class="erro-mensagem")= mensagemErro
+          
+   
+
+    script.
+      function mudarFonte(classeFonte) {
+        document.querySelector('.centro').classList.remove('fonte-padrao', 'fonte-grande', 'fonte-maior');
+        document.querySelector('.centro').classList.add(classeFonte);
+      }
